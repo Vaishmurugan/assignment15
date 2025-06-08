@@ -1,0 +1,47 @@
+import java.util.*;
+public class Solution {
+    private static final String DIRS = "DLRU";
+    private static final int[] DR = {1, 0, 0, -1};  
+    private static final int[] DC = {0, -1, 1, 0};
+    public static List<String> findPaths(int[][] maze) {
+        int n = maze.length;
+        List<String> paths = new ArrayList<>();
+        if (maze[0][0] == 0 || maze[n-1][n-1] == 0) return paths;
+        dfs(0, 0, maze, n, new StringBuilder(), paths);
+        return paths;
+    }
+
+    private static void dfs(int r, int c, int[][] maze, int n, StringBuilder path, List<String> paths) {
+        if (r == n-1 && c == n-1) {
+            paths.add(path.toString());
+            return;
+        }
+
+        maze[r][c] = 0;  // mark visited
+        for (int i = 0; i < 4; i++) {
+            int nr = r + DR[i];
+            int nc = c + DC[i];
+
+            if (nr >= 0 && nr < n && nc >= 0 && nc < n && maze[nr][nc] == 1) {
+                path.append(DIRS.charAt(i));
+                dfs(nr, nc, maze, n, path, paths);
+                path.deleteCharAt(path.length() - 1);
+            }
+        }
+
+        maze[r][c] = 1;  // backtrack
+    }
+
+    public static void main(String[] args) {
+        int n = 4;
+        int[][] maze = {
+            {1, 0, 0, 0},
+            {1, 1, 0, 1},
+            {0, 1, 0, 0},
+            {1, 1, 1, 1}
+        };
+
+        List<String> result = findPaths(maze);
+        System.out.println(result); 
+    }
+}
